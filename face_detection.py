@@ -21,7 +21,8 @@ while (True):
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
         crop = frame[x:x+w,y:y+h]
-        frame = crop
+        #cv2.imwrite(crop)
+        #frame = crop
     # Display the resulting frame
     cv2.imshow('FaceDetection', frame)
 
