@@ -3,10 +3,14 @@ import sys
 
 faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 video_capture = cv2.VideoCapture(0)
-
+image_counter = 0
+frame_number = 0
 
 while (True):
-    # Capture frame-by-frame
+    # Capture frame-by-frame - about 30 per second so set counter in here so takes photo
+    # every 30 frames only
+    #     img = cv2.flip(img, 1) ?? - mirror image if needed?
+    frame_number += 1
     ret, frame = video_capture.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     k = cv2.waitKey(1)
@@ -19,14 +23,19 @@ while (True):
     )
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
+        if(frame_number >= 30):
+            crop = frame[y:y+h, x:x+w]
+            img_name = '../face_detector_data/toby/toby_face{}.png'.format(image_counter)
+            cv2.imwrite(img_name, crop)
+            print("Written: " + img_name)
+            image_counter += 1
+            frame_number = 0
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
-        crop = frame[x:x+w,y:y+h]
-        #cv2.imwrite(crop)
-        #frame = crop
     # Display the resulting frame
     cv2.imshow('FaceDetection', frame)
 
-    if (k%256 == 27): #ESC Pressed
+
+    if (k%256 == 27): #ESC Pressed - exit
         break
 
 

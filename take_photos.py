@@ -1,37 +1,52 @@
 import cv2
+import sys
+import os
 
-def show_webcam(mirror=False):
-	img_counter = 0
-	cam = cv2.VideoCapture(0)
-	#cam.set(cv2.cv.CV_CAP_PROP_FPS, 10)
-	cam.set(cv2.CAP_PROP_FRAME_WIDTH, 1280)
-	cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 720)
-	cam.set(cv2.CAP_PROP_FPS, 30)
-	while(True):
-		ret_val, img = cam.read()
-		if (mirror):
-			img = cv2.flip(img, 1)
-		# do stuff to img here
-		# read in .sav at the start of the file and then classifier.classify(img)
-		cv2.rectangle(img, (50,50), (200, 20), (0, 255, 0), 2)
-		cv2.imshow('Webcam Input', img)
-		if (cv2.waitKey(1) == 27):
-			# esc to take photo
-			print("writing image")
-			img_name = "toby_face{}.png".format(img_counter)
-			cv2.imwrite(img_name, img)
-			print("{} written!".format(img_name))
-			img_counter += 1
-		elif (cv2.waitKey(1) == 32):
-			print("breaking")
-			break  # space to quit
+faceCascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
+video_capture = cv2.VideoCapture(0)
+image_counter = 0
+frame_number = 0
 
-	cv2.destroyAllWindows()
+print(sys.argv[1])
+
+while (True):
+    # Capture frame-by-frame - about 30 per second so set counter in here so takes photo
+    # every 30 frames only
+    #     img = cv2.flip(img, 1) ?? - mirror image if needed?
+    frame_number += 1
+    ret, frame = video_capture.read()
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    k = cv2.waitKey(1)
+    faces = faceCascade.detectMultiScale(
+        gray,
+        scaleFactor=1.5,
+        minNeighbors=5,
+        minSize=(30, 30),
+        flags=cv2.CASCADE_SCALE_IMAGE
+    )
+    # Draw a rectangle around the faces
+    for (x, y, w, h) in faces:
+        if(frame_number >= 10):
+            crop = frame[y:y+h, x:x+w]
+            img_name = '../face_detector_data/{}/{}_face{}.png'.format(sys.argv[1],sys.argv[1],image_counter)
+            if(not os.path.exists(os.path.dirname(img_name))):
+                try:
+                    os.makedirs(os.path.dirname(img_name))
+                except OSError: # Guard against race condition
+                    print("error")
+            cv2.imwrite(img_name, crop)
+            print("Written: " + img_name)
+            image_counter += 1
+            frame_number = 0
+        cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
+    # Display the resulting frame
+    cv2.imshow('FaceDetection', frame)
 
 
-def main():
-	show_webcam(mirror=True)
+    if (k%256 == 27): #ESC Pressed - exit
+        break
 
 
-if __name__ == '__main__':
-    main()
+# When everything is done, release the capture
+video_capture.release()
+cv2.destroyAllWindows()
