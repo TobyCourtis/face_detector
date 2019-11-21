@@ -8,11 +8,13 @@ image_counter = 0
 frame_number = 0
 
 print(sys.argv[1])
+#print(os.path.isfile('../face_detector_data/toby/toby_face69.png'))
+#if (not os.path.isfile(img_name)): #does not write over exitsing images
+#check how many pics alreadu then image_counter = that number
 
 while (True):
     # Capture frame-by-frame - about 30 per second so set counter in here so takes photo
     # every 30 frames only
-    #     img = cv2.flip(img, 1) ?? - mirror image if needed?
     frame_number += 1
     ret, frame = video_capture.read()
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)

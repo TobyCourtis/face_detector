@@ -23,13 +23,6 @@ while (True):
     )
     # Draw a rectangle around the faces
     for (x, y, w, h) in faces:
-        if(frame_number >= 30):
-            crop = frame[y:y+h, x:x+w]
-            img_name = '../face_detector_data/toby/toby_face{}.png'.format(image_counter)
-            cv2.imwrite(img_name, crop)
-            print("Written: " + img_name)
-            image_counter += 1
-            frame_number = 0
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
     # Display the resulting frame
     cv2.imshow('FaceDetection', frame)
