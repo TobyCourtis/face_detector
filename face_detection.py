@@ -25,6 +25,8 @@ while (True):
     for (x, y, w, h) in faces:
         cv2.rectangle(frame, (x, y), (x+w, y+h), (0, 255, 0), 2)
     # Display the resulting frame
+    #print(frame)
+    print(type(frame))
     cv2.imshow('FaceDetection', frame)
 
 
