@@ -3,11 +3,15 @@ import torch.nn as nn
 import torch.utils.data as utils
 import cv2
 import os
+import random
+from local_classes import Dataset
 
 ########
 #print("This is for training the classifier based off my university project")
 #https://colab.research.google.com/gist/cwkx/c0e7421f470255bb6536e523dba703b5/coursework-pegasus.ipynb#scrollTo=RGbLY6X-NH4O
 ########
+
+
 
 
 # Section 1 - Iterate directory and create labels and data lists
@@ -24,21 +28,25 @@ for dirname, dirnames, filenames in os.walk(training_data_path):
             dataset.append(resized_read_image)
             labels.append(name)
 
-print(len(labels))
-print(len(dataset))
+#shuffle lists and dataset/labels are now shuffled in the same order dataset'img' == labels'img label'
+z = list(zip(dataset, labels))
+random.shuffle(z)
+dataset, labels = zip(*z)
+
+# initialise training dataset // could make the above functions and save to pkl if needed
+training_set = Dataset(dataset, labels)
+
 
 
 
 # Section 2 - Input data into CNN and TRAIN
 
-# dataset = a list of numpy arrays
-tensor_x = torch.stack([torch.Tensor(i) for i in dataset])
-
-# need to look into creating a dataset with labels attached before input to NN
 
 
-tensor_dataset = utils.TensorDataset(tensor_x) # create your datset
-dataloader = utils.DataLoader(tensor_dataset) # create your dataloader
+
+
+
+
 
 # Section 3 - Save classifier
 
@@ -54,7 +62,7 @@ path = "../face_detector_data/toby/toby_face0.png"
 image = cv2.imread(path, cv2.COLOR_BGR2GRAY)
 scale = 25
 
-while(True):
+while(False):
     #cv2.imshow("test", image)
     width = int(image.shape[1] * (scale/100))
     height = int(image.shape[0] * (scale/100))
