@@ -1,0 +1,5 @@
+Changed from string label to idx_to_label giving an integer as a label rather than string.
+
+
+TODO:
+Issues now with size of NN layer - need to fix

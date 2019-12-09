@@ -13,7 +13,8 @@ class Dataset(data.Dataset):
 
   def __getitem__(self, index):
         # Load data and get label
-        X = torch.from_numpy(self.list_IDs[index])
+        X = torch.Tensor(self.list_IDs[index])
+        # need to read in or do something so this is in a usable type ya feel
+        # y = torch.Tensor(self.labels[index])
         y = self.labels[index]
-
         return X, y

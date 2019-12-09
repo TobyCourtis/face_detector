@@ -1,18 +1,19 @@
 import torch
 import torch.nn as nn
 import torch.utils.data as utils
+from torchvision import transforms
 import cv2
 import os
 import random
 import numpy as np
 from local_classes import Dataset
 from neural_network import MyNetwork
+from torch.utils import data
 
 ########
 #print("This is for training the classifier based off my university project")
 #https://colab.research.google.com/gist/cwkx/c0e7421f470255bb6536e523dba703b5/coursework-pegasus.ipynb#scrollTo=RGbLY6X-NH4O
 ########
-
 
 
 
@@ -22,6 +23,13 @@ def generate_dataset():
     dataset = []
     labels = []
 
+    idx_to_label = {
+        0: 'chloe',
+        1: 'toby',
+        2: 'adam'
+    }
+    pred = 0
+    print(idx_to_label[pred])
     for dirname, dirnames, filenames in os.walk(training_data_path):
         for filename in filenames:
             if((filename.find(".png") > -1) | (filename.find(".jpg") > -1)):
@@ -29,25 +37,32 @@ def generate_dataset():
                 read_image = cv2.imread(dirname+'/'+filename, cv2.COLOR_BGR2GRAY)
                 resized_read_image = cv2.resize(read_image, (273, 273), interpolation = cv2.INTER_AREA)
                 dataset.append(resized_read_image)
-                labels.append(name)
+                if(name == 'chloe'):
+                    labels.append(0)
+                elif(name == 'toby'):
+                    labels.append(1)
+                elif(name == 'adam'):
+                    labels.append(2)
 
     #shuffle lists and dataset/labels are now shuffled in the same order dataset'img' == labels'img label'
-    z = list(zip(dataset, labels))
-    random.shuffle(z)
-    dataset, labels = zip(*z)
+    # z = list(zip(dataset, labels))
+    # random.shuffle(z)
+    # dataset, labels = zip(*z)
+    # return list(dataset), list(labels)
     return dataset, labels
 
 generated = generate_dataset()
 dataset = generated[0]
 labels  =  generated[1]
 print("> Datasets genereated")
-print(len(dataset))
-print(len(labels))
+print("Dataset Length: {}".format(len(dataset)))
+print("Label Length: {}".format(len(labels)))
+
 # initialise training dataset // could make the above functions and save to pkl if needed
 training_set = Dataset(dataset, labels)
 
 parameters = {'batch_size': 16, 'shuffle': False, 'num_workers': 6}
-training_generator = utils.DataLoader(training_set, **parameters)
+training_generator = data.DataLoader(training_set, **parameters)
 
 def cycle(iterable):
     while True:
@@ -55,6 +70,10 @@ def cycle(iterable):
             yield x
 
 train_iterator = iter(cycle(training_generator))
+
+
+
+
 
 
 # Section 2 - Input data into NN from neural_network.py and train
@@ -78,11 +97,9 @@ while(epoch < max_epochs):
     # iterate over some of the train dateset
     for i in range(1000):
         # x,t = next(train_iterator)
-        # print(x,t)
         # x,t = x.to(device), t.to(device)
         for x, t in training_generator:
             x, t = x.to(device), t.to(device)
-
         optimiser.zero_grad()
         p = N(x)
         loss = ((p-x)**2).mean() # simple l2 loss
@@ -101,7 +118,8 @@ while(epoch < max_epochs):
     print ("Epoch:", epoch, "Training Loss: ", np.mean(train_loss_arr))
     # print ("Epoch:", epoch, "Training Loss: ", np.mean(train_loss_arr), "Valid Loss: ", np.mean(valid_loss))
 
-print("Finished training Neural Network")
+print("> Finished training Neural Network")
+
 
 
 
@@ -119,8 +137,7 @@ path = "../face_detector_data/toby/toby_face0.png"
 image = cv2.imread(path, cv2.COLOR_BGR2GRAY)
 image_tensor = torch.from_numpy(image)
 prediction = N(image_tensor)
-
-print(prediction)
+print("> Prediction = {}".format(idx_to_label[prediction]))
 
 scale = 25
 while(False):
