@@ -4,13 +4,13 @@ class MyNetwork(nn.Module):
     def __init__(self):
         super(MyNetwork, self).__init__()
         layers = nn.ModuleList()
-        layers.append(nn.Linear(in_features=273*273*3, out_features=512))
+        layers.append(nn.Linear(in_features=32*32*3, out_features=512))
         layers.append(nn.ReLU())
         layers.append(nn.Linear(in_features=512, out_features=32))
         layers.append(nn.ReLU())
         layers.append(nn.Linear(in_features=32, out_features=512))
         layers.append(nn.ReLU())
-        layers.append(nn.Linear(in_features=512, out_features=273*273*3))
+        layers.append(nn.Linear(in_features=512, out_features=32*32*3))
         layers.append(nn.Sigmoid())
         self.layers = layers
 
@@ -30,5 +30,5 @@ class MyNetwork(nn.Module):
     def decode(self, x):
         for i in range(4,8):
             x = self.layers[i](x)
-        x = x.view(x.size(0), 273, 273, 3)
+        x = x.view(x.size(0), 32, 32, 3)
         return x

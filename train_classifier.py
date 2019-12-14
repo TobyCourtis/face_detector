@@ -9,6 +9,7 @@ import numpy as np
 from local_classes import Dataset
 from neural_network import MyNetwork
 from torch.utils import data
+#from livelossplot import PlotLosses
 
 ########
 #print("This is for training the classifier based off my university project")
@@ -35,7 +36,7 @@ def generate_dataset():
             if((filename.find(".png") > -1) | (filename.find(".jpg") > -1)):
                 name = str(dirname.split('/')[-1])
                 read_image = cv2.imread(dirname+'/'+filename, cv2.COLOR_BGR2GRAY)
-                resized_read_image = cv2.resize(read_image, (273, 273), interpolation = cv2.INTER_AREA)
+                resized_read_image = cv2.resize(read_image, (32, 32), interpolation = cv2.INTER_AREA)
                 dataset.append(resized_read_image)
                 if(name == 'chloe'):
                     labels.append(0)
@@ -45,10 +46,10 @@ def generate_dataset():
                     labels.append(2)
 
     #shuffle lists and dataset/labels are now shuffled in the same order dataset'img' == labels'img label'
-    # z = list(zip(dataset, labels))
-    # random.shuffle(z)
-    # dataset, labels = zip(*z)
-    # return list(dataset), list(labels)
+    z = list(zip(dataset, labels))
+    random.shuffle(z)
+    dataset, labels = zip(*z)
+    return list(dataset), list(labels)
     return dataset, labels
 
 generated = generate_dataset()
@@ -88,7 +89,7 @@ optimiser = torch.optim.Adam(N.parameters(), lr=0.001)
 epoch = 0
 max_epochs = 5
 print("> Training NN")
-while(epoch < max_epochs):
+while(epoch < 1):
     # arrays for metrics
     logs = {}
     train_loss_arr = np.zeros(0)
@@ -125,12 +126,6 @@ print("> Finished training Neural Network")
 
 
 # Section 3 - Save classifier
-
-# model = classifier.fit(np.array(data_input),data_input_labels,sample_weight=None)
-# print("Saving Classifier...")
-# filename = 'classifier_network_type.sav'
-# pickle.dump(model, open(filename, 'wb'))
-# print("Finished saving Classifier...")
 
 
 path = "../face_detector_data/toby/toby_face0.png"
