@@ -52,4 +52,6 @@ print("Prediction: ", prediction)
 # _, predicted = torch.max(output, 1)
 # print("> Predicted: {}".format(predicted[0]))
 
+
+# after prediction say "Hello {name}!"
 print("> Prediction = {}".format(idx_to_label[prediction]))
