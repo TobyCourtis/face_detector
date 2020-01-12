@@ -1,0 +1,24 @@
+if(name == 'chloe'):
+                    labels.append(0)
+                elif(name == 'toby'):
+                    labels.append(1)
+                elif(name == 'adam'):
+                    labels.append(2)
+                elif(name == 'max'):
+                    labels.append(3)
+                elif(name == 'aaron'):
+                    labels.append(4)
+                elif(name == 'alexandra'):
+                    labels.append(5)
+                elif(name == 'alvaro'):
+                    labels.append(6)
+                elif(name == 'alycia'):
+                    labels.append(7)
+                elif(name == 'amanda'):
+                    labels.append(8)
+                elif(name == 'amaury'):
+                    labels.append(9)
+                elif(name == 'amber'):
+                    labels.append(10)
+                elif(name == 'anna'):
+                    labels.append(11)
