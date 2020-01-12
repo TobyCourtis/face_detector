@@ -9,7 +9,16 @@ device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cp
 idx_to_label = {
         0: 'chloe',
         1: 'toby',
-        2: 'adam'
+        2: 'adam',
+        3: 'max',
+        4: 'aaron',
+        5: 'alexandra',
+        6: 'alvaro',
+        7: 'alycia',
+        8: 'amanda',
+        9: 'amaury',
+        10: 'amber',
+        11: 'anna'
     }
 
 # NN = torch.load('/content/drive/My Drive/classifier_10_epochs.pt')
