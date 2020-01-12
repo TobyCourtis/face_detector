@@ -17,8 +17,9 @@ from torch.utils import data
 ########
 
 
-
+##############################
 # Section 1 - Iterate directory and create labels and data lists
+##############################
 def generate_dataset():
     training_data_path = "../face_detector_data"
     dataset = []
@@ -51,7 +52,6 @@ def generate_dataset():
                 dataset.append(resized_read_image)
                 labels.append(rev_dict[name])
 
-    #shuffle lists and dataset/labels are now shuffled in the same order dataset'img' == labels'img label'
     z = list(zip(dataset, labels))
     random.shuffle(z)
     dataset, labels = zip(*z)
@@ -83,8 +83,10 @@ train_iterator = iter(cycle(training_generator))
 
 
 
-
+##############################
 # Section 2 - Input data into NN from neural_network.py and train
+##############################
+
 device = torch.device('cuda') if torch.cuda.is_available() else torch.device('cpu')
 N = MyNetwork().to(device)
 
@@ -131,26 +133,12 @@ print("> Finished training Neural Network")
 
 
 
-
+##############################
 # Section 3 - Save classifier
+##############################
 
+classifier_name = "10_epochs"
 
-path = "../face_detector_data/toby/toby_face0.png"
-image = cv2.imread(path, cv2.COLOR_BGR2GRAY)
-image_tensor = torch.from_numpy(image)
-prediction = N(image_tensor)
-print("> Prediction = {}".format(idx_to_label[prediction]))
-
-scale = 25
-while(False):
-    #cv2.imshow("test", image)
-    width = int(image.shape[1] * (scale/100))
-    height = int(image.shape[0] * (scale/100))
-    dim = (width, height)
-    resized = cv2.resize(image, (273, 273), interpolation = cv2.INTER_AREA)
-    cv2.imshow("resized_image", resized)
-    k = cv2.waitKey(1)
-    if (k%256 == 27): #ESC Pressed - exit
-        break
-
-cv2.destroyAllWindows()
+torch.save(N, "../" + classifier_name + ".pt")
+torch.save(N.state_dict(), "../" + classifier_name + "_state_dict" +  ".pt")
+print("> Classifier Saved as: " + classifier_name + ".pt")

@@ -16,7 +16,7 @@ idx_to_label = {
 # NN.eval()
 # print("> Done Eval")
 
-name = "chloe"
+name = "adam"
 path = "../face_detector_data/" + name + "/" + name+ "_face10.png"
 print(name)
 read_image = cv2.imread(path, cv2.COLOR_BGR2GRAY)
@@ -28,7 +28,6 @@ test_input = test_input.float()
 test_input = test_input.unsqueeze(0)
 
 # inputting this gave same output everytime
-
 # dataiter = iter(training_generator)
 # images, labels = dataiter.next()
 
@@ -51,7 +50,3 @@ print("Prediction: ", prediction)
 # print("Max(1)[1]: ", output.max(1)[1])
 # _, predicted = torch.max(output, 1)
 # print("> Predicted: {}".format(predicted[0]))
-
-
-# after prediction say "Hello {name}!"
-print("> Prediction = {}".format(idx_to_label[prediction]))
